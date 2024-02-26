@@ -1,0 +1,2 @@
+- hosts: hyperfoil_controller
+  roles: [ hyperfoil_controller ]

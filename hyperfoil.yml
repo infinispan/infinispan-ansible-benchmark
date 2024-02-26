@@ -1,0 +1,8 @@
+- ansible.builtin.import_playbook: hyperfoil_controller.yml
+
+- ansible.builtin.import_playbook: hyperfoil_agent.yml
+
+- ansible.builtin.import_playbook: hyperfoil_controller.yml
+  vars:
+    operation: shutdown
+

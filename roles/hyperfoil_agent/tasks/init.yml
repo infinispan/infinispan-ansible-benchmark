@@ -1,0 +1,5 @@
+- name: Install Java 17 on agents
+  package:
+    name: openjdk-17-jdk
+    state: present
+  become: true

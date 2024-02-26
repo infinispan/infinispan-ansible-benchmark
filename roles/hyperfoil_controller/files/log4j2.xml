@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration name="CommandLineConfig">
+    <Appenders>
+        <Console name="STDOUT">
+            <PatternLayout pattern="%d{HH:mm:ss,SSS} %-5p (%t) [%c{1.}] %m%throwable%n"/>
+        </Console>
+        <!-- The file log is off by default (we don't want to create the file if anything
+             uses hyperfoil-core as a dependency -->
+        <File name="FILE" fileName="${sys:io.hyperfoil.controller.log.file:-/dev/null}">
+            <PatternLayout pattern="%d{HH:mm:ss,SSS} %-5p (%t) [%c{1.}] %m%throwable%n"/>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="io.hyperfoil" level="INFO"/>
+        <Logger name="io.vertx" level="INFO"/>
+        <Logger name="io.netty" level="INFO"/>
+        <!-- Infinispan is too noisy with all those rebalances -->
+        <Logger name="org.infinispan" level="WARN"/>
+        <!-- Agent classes are shaded and have different packages -->
+        <Logger name="shaded.org.infinispan" level="WARN"/>
+
+        <Root level="INFO">
+            <AppenderRef ref="STDOUT" level="TRACE"/>
+            <AppenderRef ref="FILE" level="${sys:io.hyperfoil.controller.log.file.level:-OFF}"/>
+        </Root>
+    </Loggers>
+</Configuration>

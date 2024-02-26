@@ -1,0 +1,3 @@
+- name: Setup Hyperfoil controller
+  ansible.builtin.import_role:
+    name: hyperfoil.hyperfoil_setup

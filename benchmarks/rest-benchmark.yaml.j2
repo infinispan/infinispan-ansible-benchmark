@@ -1,0 +1,53 @@
+name: rest-benchmark
+{% for ispn_server in groups['server'] %}
+http:
+- host: http://{{ ispn_server }}:11222
+  # Not sure how many we need here...
+  sharedConnections: 50
+{% endfor %}
+# List of agents the Controller should deploy
+agents:
+{% for agent in groups[hyperfoil_agent_group] %}
+  {{ agent }}:
+    name: "{{ hostvars[agent]['inventory_hostname'] }}:{{ hyperfoil_agent_port }}"
+    extras: "{{ java_options | default(agent_java_args | default('')) }}"
+{% endfor %}
+phases:
+- rampupPut:
+    increasingRate:
+      duration: 10s
+      initialUsersPerSec: 1
+      targetUsersPerSec: 100
+      maxSessions: 100
+      scenario: &put
+      - putData:
+        - randomInt: cacheKey <- 1 .. 4000
+        - randomUUID: cacheValue
+        - httpRequest:
+            POST: /rest/v2/caches/{{ cache_name }}/${cacheKey}
+            body: ${cacheValue}
+- rampupGet:
+    increasingRate:
+      duration: 10s
+      initialUsersPerSec: 1
+      targetUsersPerSec: 100
+      maxSessions: 100
+      scenario: &get
+      - getData:
+        - randomInt: cacheKey <- 1 .. 4000
+        - httpRequest:
+            GET: /rest/v2/caches/{{ cache_name }}
+- doPut:
+    constantRate:
+      startAfter: rampupPut
+      duration: 2m
+      usersPerSec: 20
+      maxSessions: 10
+      scenario: *put
+- doGet:
+    constantRate:
+      startAfter: rampupGet
+      duration: 2m
+      usersPerSec: 160
+      maxSessions: 80
+      scenario: *get

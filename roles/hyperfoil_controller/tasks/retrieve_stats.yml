@@ -1,0 +1,11 @@
+- name: Find number of requests
+  set_fact:
+    test_requests: "{{ lookup('csvfile', 'main file=/tmp/hyperfoil/workspace/run/' + test_runid + '/stats/total.csv col=4 delimiter=,')}}"
+- name: Print number of requests
+  debug:
+    msg: "Executed {{ test_requests }} requests."
+- name: Download JFR
+  ansible.builtin.fetch:
+    src: "{{ hyperfoil_dir }}/hfc-{{ ansible_hostname }}.jfr"
+    dest: "./"
+    flat: true

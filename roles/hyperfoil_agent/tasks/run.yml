@@ -1,0 +1,9 @@
+- name: Import hyperfoil test to run
+  ansible.builtin.import_role:
+    name: hyperfoil.hyperfoil_test
+
+- name: Hyperfoil test requests
+  ansible.builtin.import_role:
+    name: hyperfoil_controller
+  vars:
+    operation: stats

@@ -1,0 +1,3 @@
+- name: Shutdown Hyperfoil
+  ansible.builtin.import_role:
+    name: hyperfoil.hyperfoil_shutdown

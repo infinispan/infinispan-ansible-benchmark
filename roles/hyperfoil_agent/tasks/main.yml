@@ -1,0 +1,8 @@
+- name: "Initializing hyperfoil agent requirements"
+  ansible.builtin.include_tasks: init.yml
+  when: operation is undefined or operation is search("init")
+
+- name: "Running hyperfoil test"
+  ansible.builtin.include_tasks: run.yml
+  run_once: true
+  when: operation is undefined or operation is search("run")

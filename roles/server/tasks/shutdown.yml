@@ -1,0 +1,6 @@
+  - name: Remove containers
+    containers.podman.podman_container:
+      name: infinispan-server
+      state: absent
+
+  - ansible.builtin.import_tasks: fetch.yml

@@ -1,0 +1,18 @@
+    - debug:
+        msg: "Server Operation is {{ operation | default('DEFAULT') }}"
+
+    - name: "Initializing server requirements"
+      ansible.builtin.include_tasks: init.yml
+      when: operation is undefined or operation is search("init")
+
+    - name: "Running server"
+      ansible.builtin.include_tasks: run.yml
+      when: operation is undefined or operation is search("run")
+
+    - name: "Creating cache"
+      ansible.builtin.include_tasks: create_cache.yml
+      when: operation is undefined or operation is search("create_cache")
+
+    - name: "Shutting down server"
+      ansible.builtin.include_tasks: shutdown.yml
+      when: operation is defined and operation is search("shutdown")

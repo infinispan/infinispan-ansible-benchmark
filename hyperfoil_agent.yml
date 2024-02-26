@@ -1,0 +1,2 @@
+- hosts: hyperfoil_agent
+  roles: [ hyperfoil_agent ]

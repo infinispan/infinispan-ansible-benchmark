@@ -1,0 +1,11 @@
+    - name: Add the cache
+      ansible.builtin.uri:
+        url: "http://0.0.0.0:11222/rest/v2/caches/{{ cache_name }}"
+        url_username: "{{ user }}"
+        url_password: "{{ pass }}"
+        method: PUT
+        body: "{{ lookup('ansible.builtin.file', cache_file) }}"
+        headers:
+          Content-Type: application/xml
+        status_code: [200, 201]
+      run_once: true

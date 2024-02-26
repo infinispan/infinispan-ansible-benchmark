@@ -1,0 +1,16 @@
+# The default test name to find in the benchmarks directory with a prefix ending in `yaml.j2`
+test_name: hotrod-benchmark
+# The JVM arguments to provide to the agent when it starts
+# Note this is replaced in the benchmark file itself, see the benchmarks directory in the root
+agent_java_args: "{{ undef() }}"
+
+# The rest are all described at https://github.com/Hyperfoil/hyperfoil_test
+
+hyperfoil_controller_group: hyperofoil-controller
+hyperfoil_controller_host: "{{ undef{} }}"
+hyperfoil_controller_port: "{{ undef{} }}"
+hyperfoil_controller_protocol: http
+hyperfoil_validate_certs: true
+hyperfoil_deployer: ssh
+hyperfoil_agent_group: hyperfoil-agent
+hyperfoil_agent_port: 22
