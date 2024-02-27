@@ -4,6 +4,13 @@
         java_options: "{{ '-XX:StartFlightRecording:filename=' + server_tmp_dir + '/jfr/server-' + inventory_hostname + '.jfr' }}"
       when: capture_jfr is defined and capture_jfr
 
+    - name: Create JFR directory
+      ansible.builtin.file:
+        path: "{{ server_tmp_dir }}/jfr"
+        state: directory
+        # Have to make global writeable for the user that Infinispan Server creates
+        mode: '0777'
+
     - name: Apply server_java_args
       set_fact:
         java_options: "{{ java_options + server_java_args if java_options is defined else server_java_args }}"

@@ -9,3 +9,4 @@
     src: "{{ hyperfoil_dir }}/hfc-{{ ansible_hostname }}.jfr"
     dest: "./"
     flat: true
+  when: hyperfoil_jfr
