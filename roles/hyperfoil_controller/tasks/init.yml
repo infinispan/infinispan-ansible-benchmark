@@ -1,4 +1,3 @@
-- name: "Installing Java 17 on Hyperfoil Agent"
+- name: "Installing Java 17 on Hyperfoil Controller"
   ansible.builtin.include_role:
     name: java_installer
-
