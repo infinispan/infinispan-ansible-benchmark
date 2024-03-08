@@ -1,3 +1,6 @@
+# Creates a named SSH key at $HOME/.ssh on the controller if not present
+ssh_key: "{{ undef() }}"
+
 # All of these are described at https://github.com/Hyperfoil/hyperfoil_setup
 
 hyperfoil_distribution: "{{ undef() }}"
