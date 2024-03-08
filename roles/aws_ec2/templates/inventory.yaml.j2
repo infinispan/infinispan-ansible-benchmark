@@ -1,0 +1,25 @@
+all:
+  vars:
+    ansible_ssh_private_key_file: {{ cluster_name }}_{{ region }}.pem
+    hyperfoil_controller_host: {{ controller_instances[0].public_dns_name }}
+server:
+   vars:
+     ansible_user: {{ server_user }}
+   hosts:
+{% for instance in server_instances %}
+     {{ instance.public_dns_name }}:
+{% endfor %}
+hyperfoil_agent:
+   vars:
+     ansible_user: {{ agent_user }}
+   hosts:
+{% for instance in agent_instances %}
+     {{ instance.public_dns_name }}:
+{% endfor %}
+hyperfoil_controller:
+  vars:
+    ansible_user: {{ controller_user }}
+  hosts:
+{% for instance in controller_instances %}
+    {{ instance.public_dns_name }}:
+{% endfor %}

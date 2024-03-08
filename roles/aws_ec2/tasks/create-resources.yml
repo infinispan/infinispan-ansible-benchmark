@@ -1,0 +1,58 @@
+- name: Get Ansible Control Host's public IP
+  shell: curl -ks --ipv4 https://ifconfig.me
+  register: control_host_ip
+  no_log: "{{ no_log_sensitive }}"
+
+- debug: var=cidr_ip
+
+- name: Create Security Group
+  amazon.aws.ec2_security_group:
+    state: present
+    region: '{{ region }}'
+    name: '{{ cluster_name }}'
+    description: '{{ cluster_name }}'
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: '{{ cidr_ip }}'
+      # Open Hyperfoil Controller port
+      - proto: tcp
+        from_port: 8090
+        to_port: 8090
+        cidr_ip: '{{ cidr_ip }}'
+      # Open ISPN server port
+      - proto: tcp
+        from_port: 11222
+        to_port: 11222
+        cidr_ip: '{{ cidr_ip }}'
+      # Open all inbound from same security group
+      - proto: -1
+        group_name: "{{ cluster_name }}"
+  register: group
+  no_log: "{{ no_log_sensitive }}"
+
+- name: Create Key
+  amazon.aws.ec2_key:
+    state: present
+    region: '{{ region }}'
+    name: '{{ cluster_name }}'
+  register: key
+  no_log: "{{ no_log_sensitive }}"
+
+- name: Save Private Key on Ansible Control Machine
+  when: key.changed
+  copy:
+    content: '{{ key.key.private_key }}'
+    dest: '{{ cluster_name }}_{{ region }}.pem'
+    mode: 0600
+  no_log: "{{ no_log_sensitive }}"
+
+- name: Create instances
+  include_tasks: create-group-resources.yml
+  loop: [ 'server', 'agent', 'controller' ]
+
+- name: Create Inventory File
+  template:
+    src: inventory.yaml.j2
+    dest: '{{ cluster_name }}_{{ region }}_inventory.yaml'
