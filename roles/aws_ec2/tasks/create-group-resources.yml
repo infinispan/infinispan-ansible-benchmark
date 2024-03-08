@@ -1,0 +1,26 @@
+- name: "Look up AMI {{ vars[item + '_ami_name'] }}"
+  amazon.aws.ec2_ami_info:
+    region: "{{ region }}"
+    filters:
+      name: "{{ vars[item + '_ami_name'] }}"
+  register: ami_info
+
+- name: "Create {{ vars[item + '_cluster_size'] }} {{ item }} EC2 Instances"
+  amazon.aws.ec2_instance:
+    state: started
+    region: "{{ region }}"
+    name: "{{ item }}_{{ cluster_name }}"
+    count: "{{ vars[item + '_cluster_size'] }}"
+    instance_type: "{{ vars[item + '_instance_type'] }}"
+    image_id: "{{ ami_info.images[0].image_id }}"
+    key_name: "{{ cluster_name }}"
+    security_group: "{{ group.group_id }}"
+    network:
+      assign_public_ip: yes
+  register: instance_info
+  no_log: "{{ no_log_sensitive }}"
+# Needed because register doesn't allow for dynamic variable name generation but set_fact does
+- name: Set instance information
+  set_fact:
+    "{{ item }}_instances": "{{ instance_info.instances }}"
+

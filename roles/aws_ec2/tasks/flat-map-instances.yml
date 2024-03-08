@@ -1,0 +1,15 @@
+- name: Initialize temporary array
+  set_fact:
+    tmp_array : []
+- name: Add instances to {{ instance_type }} array
+  set_fact:
+    tmp_array: "{{ tmp_array + [item] }}"
+    debug: "{{ item }}"
+      #  loop: "{{ instance_info.instances }}"
+  loop: "{{ instance_info.instances }}"
+  loop_control:
+    label: "{{ item.tags.Name }}={{ item.public_dns_name }}"
+  when: "item.tags.Name is match(instance_type + '.*')"
+- name: Set actual {{ instance_type }} array
+  set_fact:
+    "{{ instance_type }}_instances" : "{{ tmp_array }}"

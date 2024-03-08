@@ -16,10 +16,10 @@
         java_options: "{{ java_options + server_java_args if java_options is defined else server_java_args }}"
       when: server_java_args is defined
 
-    - name: Copy Infinispan Server file if present
-      ansible.builtin.copy:
+    - name: Template Infinispan Server Configuration file
+      ansible.builtin.template:
         src: "{{ server_configuration_file }}"
-        dest: "{{ server_tmp_dir }}"
+        dest: "{{ server_tmp_dir }}/infinispan.xml"
       when: server_configuration_file is defined
 
     - name: Start Infinispan container
@@ -29,8 +29,6 @@
         recreate: true
         state: started
         net: host
-          #command: ./bin/launch.sh #-Dinfinispan.cluster.stack=kubernetes -Djgroups.dns.query="infinispan-dns-ping.myproject.svc.cluster.local" 
-          #workdir: /opt/infinispan
         env:
           USER: "{{ user }}"
           PASS: "{{ pass }}"
@@ -41,12 +39,12 @@
         volume:
           - "{{ server_tmp_dir }}:{{ server_tmp_dir }}"
         command:
-          - "{{ '-c ' + server_tmp_dir + '/' + server_configuration_file | basename if server_configuration_file is defined else '' }}"
+          - "{{ '-c ' + server_tmp_dir + '/' + 'infinispan.xml' | basename if server_configuration_file is defined else '' }}"
 
     - name: Wait until server is up or print log
       block:
         - name: Retrieve logs
-          ansible.builtin.command: podman container logs infinispan-server
+          ansible.builtin.command: "{{ 'podman container logs --since=' + ansible_date_time.iso8601 + ' infinispan-server' }}"
           register: container_log
           retries: 12
           delay: 5

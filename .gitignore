@@ -1,4 +1,5 @@
 ansible.cfg
 inventory.ini
-inventory.yaml
+*inventory.yaml
 *.log
+*.pem
