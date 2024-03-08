@@ -4,13 +4,18 @@ test_name: hotrod-benchmark
 # Note this is replaced in the benchmark file itself, see the benchmarks directory in the root
 agent_java_args: "{{ undef() }}"
 
+# This defines what ssh key will be copied from the Controller .ssh directory
+# to the authorized keys on each agent. Also the controller will add
+# a known_hosts entry for each agent
+ssh_key: "{{ undef() }}"
+
 # The rest are all described at https://github.com/Hyperfoil/hyperfoil_test
 
-hyperfoil_controller_group: hyperofoil-controller
+hyperfoil_controller_group: hyperfoil_controller
 hyperfoil_controller_host: "{{ undef{} }}"
 hyperfoil_controller_port: "{{ undef{} }}"
 hyperfoil_controller_protocol: http
 hyperfoil_validate_certs: true
 hyperfoil_deployer: ssh
-hyperfoil_agent_group: hyperfoil-agent
+hyperfoil_agent_group: hyperfoil_agent
 hyperfoil_agent_port: 22

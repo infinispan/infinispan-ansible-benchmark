@@ -1,3 +1,9 @@
 - name: "Installing Java 17 on Hyperfoil Controller"
   ansible.builtin.include_role:
     name: java_installer
+
+- name: "Generate SSH key"
+  ansible.builtin.shell:
+    cmd: "ssh-keygen -f $HOME/.ssh/{{ ssh_key }} -t rsa -q -N ''"
+    creates: "$HOME/.ssh/{{ ssh_key }}"
+  when: ssh_key is defined

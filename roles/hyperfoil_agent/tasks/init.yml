@@ -2,3 +2,30 @@
   ansible.builtin.include_role:
     name: java_installer
 
+
+- name: Configure ssh authorization
+  when: ssh_key is defined
+  block:
+
+  - name: Validate that there's only single controller
+    when: (groups[hyperfoil_controller_group] | length) != 1
+    fail:
+      msg: Only one controller is allowed.
+
+  - name: Gather controller public key
+    ansible.builtin.shell: "cat $HOME/.ssh/{{ ssh_key }}.pub"
+    register: controller_public_key_contents
+    delegate_to: "{{ groups[hyperfoil_controller_group][0] }}"
+
+  - name: Add key to authorized keys on agents
+    ansible.posix.authorized_key:
+      user: "{{ ansible_user_id }}"
+      key: "{{ controller_public_key_contents.stdout_lines[0] }}"
+
+  - name: Controller add known hosts of agents
+    ansible.builtin.known_hosts:
+      name: "{{ item }}"
+      key : "{{ lookup('pipe', 'ssh-keyscan {{ item }}') }}"
+    loop: "{{ groups[hyperfoil_agent_group] }}"
+    delegate_to: "{{ groups[hyperfoil_controller_group][0] }}"
+
