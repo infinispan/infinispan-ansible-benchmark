@@ -45,19 +45,16 @@
 
     - name: Wait until server is up or print log
       block:
-        - name: Wait for port 11222 to become open on the host, don't start checking for 10 seconds
-          ansible.builtin.wait_for:
-            host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
-            port: 11222
-            delay: 10
-            timeout: 60
-      rescue:
-        - name: Collect container log
+        - name: Retrieve logs
           ansible.builtin.command: podman container logs infinispan-server
           register: container_log
-        - name: Print container log
-          ansible.builtin.fail:
-            msg: "{{ container_log.stdout_lines }}"
+          retries: 12
+          delay: 5
+          until: container_log.stdout_lines | select('search', 'started in') | list | length > 0
+      rescue:
+      - name: Print container log
+        ansible.builtin.fail:
+          msg: "{{ container_log.stdout_lines }}"
 
     - name: Print contents of cache_file
       ansible.builtin.debug:
