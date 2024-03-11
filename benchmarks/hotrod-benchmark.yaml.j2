@@ -9,9 +9,9 @@ agents:
 {% for agent in groups[hyperfoil_agent_group] %}
   {{ agent }}:
     name: "{{ hostvars[agent]['inventory_hostname'] }}:{{ hyperfoil_agent_port }}"
-    {% if ssh_key is defined %}
+    {% if ssh_key is defined -%}
     sshKey: "{{ ssh_key }}"
-    {% endif %}
+    {% endif -%}
     extras: "{{ java_options | default(agent_java_args | default('')) }}"
 {% endfor %}
 phases:
