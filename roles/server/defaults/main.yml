@@ -7,9 +7,12 @@ server_java_args: "{{ undef() }}"
 # Allows for automatic generation of Java Flight Recorder and download
 # This will append to the server_java_args if provided
 capture_jfr: false
-# Location of a server configuration file that the server starts with
-# This can be used to change this with the cache manager itself such as authencation mechs
-server_configuration_file: "{{ undef() }}"
+# Location of a server configuration file that will be templated and applied
+# to the starting server. By default TCPPING will be populated.
+# Mutually exclusive with require_authentication
+server_configuration_file: "infinispan.xml.j2"
+# When using the default configuration template will allow disabling authentication.
+require_authentication: "true"
 # Location of where Infinispan Server benchmark related files will be created
 # Normally this is not needed to be changed
 server_tmp_dir: /tmp/infinispan-benchmark
