@@ -1,9 +1,12 @@
 - name: Find number of requests
-  set_fact:
-    test_requests: "{{ lookup('csvfile', 'main file=/tmp/hyperfoil/workspace/run/' + test_runid + '/stats/total.csv col=4 delimiter=,')}}"
+  community.general.read_csv:
+    path: "{{ '/tmp/hyperfoil/workspace/run/' + test_runid + '/stats/total.csv' }}"
+    key: Phase
+  register: test_requests
 - name: Print number of requests
   debug:
-    msg: "Executed {{ test_requests }} requests."
+    msg: "{{ item }} = {{ test_requests.dict[item].Requests }}"
+  loop: "{{ test_requests.dict.keys()|list }}"
 - name: Download JFR
   ansible.builtin.fetch:
     src: "{{ hyperfoil_dir }}/hfc-{{ ansible_hostname }}.jfr"
