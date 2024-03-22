@@ -1,0 +1,42 @@
+- name: Initialize EC2 servers and import inventory
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - import_role:
+        name: aws_ec2
+      vars:
+        operation: create
+    - import_role:
+        name: add_hosts_from_inventory
+      vars:
+        inventory_file: "{{ cluster_name }}_{{ region }}_inventory.yaml"
+
+- name: Start Server on EC2
+  hosts: server
+  roles: [ server ]
+
+- name: Start Hyperfoil Controller on EC2
+  hosts: hyperfoil_controller
+  roles:
+    - role: hyperfoil_controller
+      vars:
+        ssh_key: benchmark
+
+- name: Run Hyperfoil Test
+  hosts: hyperfoil_agent
+  roles:
+    - role: hyperfoil_agent
+      vars:
+        ssh_key: benchmark
+        download_results: true
+
+- name: Delete EC2 instances
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - role: aws_ec2
+      vars:
+        operation: delete
+

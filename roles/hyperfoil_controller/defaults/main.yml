@@ -1,12 +1,14 @@
 # Creates a named SSH key at $HOME/.ssh on the controller if not present
 ssh_key: "{{ undef() }}"
+# Allows downloading benchmark result when stats are retrieved for a given run
+download_results: false
 
 # All of these are described at https://github.com/Hyperfoil/hyperfoil_setup
 
 hyperfoil_distribution: "{{ undef() }}"
 hyperfoil_version: "{{ undef() }}"
 hyperfoil_dir: "{{ undef() }}"
-hyperfoil_controller_group: hyperfoil-controller
+hyperfoil_controller_group: hyperfoil_controller
 hyperfoil_controller_port: "{{ undef() }}"
 hyperfoil_controller_start_timeout: "{{ undef() }}"
 hyperfoil_controller_args: "{{ undef() }}"
