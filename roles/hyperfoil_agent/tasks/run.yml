@@ -3,7 +3,10 @@
     name: hyperfoil.hyperfoil_test
 
 - name: Hyperfoil test requests
-  ansible.builtin.import_role:
+  ansible.builtin.include_role:
     name: hyperfoil_controller
+    apply:
+      # Run the task on the controller so it can gather the stats
+      delegate_to: "{{ groups[hyperfoil_controller_group][0] }}"
   vars:
     operation: stats

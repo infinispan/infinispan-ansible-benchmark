@@ -7,6 +7,12 @@
   debug:
     msg: "{{ item }} = {{ test_requests.dict[item].Requests }}"
   loop: "{{ test_requests.dict.keys()|list }}"
+- name: Download Results
+  ansible.builtin.fetch:
+    src: "{{ '/tmp/hyperfoil/workspace/run/' + test_runid + '/stats/total.csv' }}"
+    dest: "{{ './' + test_runid + '_total.csv' }}"
+    flat: true
+  when: download_results
 - name: Download JFR
   ansible.builtin.fetch:
     src: "{{ hyperfoil_dir }}/hfc-{{ ansible_hostname }}.jfr"

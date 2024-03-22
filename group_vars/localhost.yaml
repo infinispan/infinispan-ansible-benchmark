@@ -1,0 +1,4 @@
+#
+cluster_identifier: "{{ lookup('env', 'USER') }}"
+#
+cluster_name: "benchmark_{{ cluster_identifier }}"

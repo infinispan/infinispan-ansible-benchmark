@@ -1,0 +1,14 @@
+- name: Import inventory back to memory
+  ansible.builtin.include_vars:
+    file: "{{ inventory_file }}"
+    name: benchmark_inventory
+- name: Add hosts
+  include_tasks:
+    file: add-host.yml
+  vars:
+    group: "{{ inventory_group }}"
+    hosts: "{{ benchmark_inventory | community.general.json_query(inventory_group + '.hosts|keys(@)') }}"
+    host_vars: "{{ benchmark_inventory | community.general.json_query(inventory_group + '.vars') | ansible.builtin.combine(benchmark_inventory.all.vars) }}"
+  loop: [ 'server', 'hyperfoil_agent', 'hyperfoil_controller' ]
+  loop_control:
+    loop_var: inventory_group

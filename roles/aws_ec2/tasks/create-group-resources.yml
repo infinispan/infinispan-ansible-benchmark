@@ -17,6 +17,11 @@
     security_group: "{{ group.group_id }}"
     network:
       assign_public_ip: yes
+    volumes:
+      - device_name: "{{ vars[item + '_volume_name'] }}"
+        ebs:
+          volume_size: "{{ vars[item + '_volume_size'] }}"
+          delete_on_termination: true
   register: instance_info
   no_log: "{{ no_log_sensitive }}"
 # Needed because register doesn't allow for dynamic variable name generation but set_fact does

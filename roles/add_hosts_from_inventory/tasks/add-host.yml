@@ -1,0 +1,6 @@
+- name: Add host
+  ansible.builtin.add_host:
+    name: "{{ item }}"
+    groups: "{{ group }}"
+  args: "{{ host_vars }}"
+  loop: "{{ hosts }}"
