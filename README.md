@@ -9,12 +9,7 @@ Requirements
 
 Ansible controller node requires ansible and jmespath to be installed
  - Also need the 3 hyperfoil roles
-   - ansible-galaxy install hyperfoil.hyperfoil_setup
-     - `ansible-galaxy install hyperfoil.hyperfoil_setup,0.19.0`
-   - ansible-galaxy install hyperfoil.hyperfoil_shutdown
-     - `ansible-galaxy install hyperfoil.hyperfoil_shutdown,0.19.0`
-   - ansible-galaxy install hyperfoil.hyperfoil_test
-     - `ansible-galaxy install hyperfoil.hyperfoil_test,0.19.0`
+   - Install by running `ansible-galaxy role install -r roles/requirements.yml`
 
 Ansible managed nodes require sshd and the ansible controller public key installed on them
 - Infinispan Server nodes will install podman if a sudoer, otherwise must be installed manually
@@ -78,6 +73,54 @@ All of the roles internally have the notion of the following "steps" that are co
 
 Running a playbook will run the respective roles for each of these. If instead you want to run a subset you can use the operation argument as such `ansible-playbook -e operation=run`.
 
+
+EC2 Benchmark
+------------
+
+It is also now possible to run this benchmark on AWS EC2 machines automatically.
+
+To do this you must install the required AWS EC2 roles
+ - Run command `ansible-galaxy collection install -r roles/ec2-requirements.yml`
+
+Now all that is needed is to set your EC2 Secret Key environment variables
+ - `export AWS_ACCESS_KEY_ID=<Key Id>`
+ - `export AWS_SECRET_ACCESS_KEY=<Key>`
+
+There are two playbooks that can be used to deploy on EC2. One that just provisions/manages
+machines and another that runs an entire end to end benchmark. Note both of these
+playbooks use the localhost group when interacting with AWS.
+
+### aws-ec2.yml
+This will provision and manage instances. The required arguments are the region (e.g `-e region=us-east-2`) and operation (e.g `-e operation=create`).
+* The operations supported are `create`, `stop`, `start` and `delete`.
+  * `create` - required to be ran first. This creates the configured instances, a local ssh file, and a local inventory file to interact with them.
+  * `stop` - stops the currently running instances
+  * `start` - restarts the instances if they had been stopped
+  * `delete` - deletes all the instances, security group, ssh key (remote and local) and the local inventory
+
+Note after doing `create` the working directory will contain two new files
+ * `benchmark_${user}_${region}.pem` file is the private ssh to key to connect to the EC2 machines
+ * `benchmark_${user}_${region}_inventory.yaml`
+
+All the instances defaults are found at [main.yaml](roles/aws_ec2/defaults/main.yml).
+The defaults for each of the node types are as follows:
+* Infinispan Server
+  * Debian O/S (Ubuntu would randomly kill pods and Amazon Linux doesn't distribute podman by default)
+  * Disk space is 20 GB as 8 GB isn't quite enough by default
+* Hyperfoil Controller
+  * Amazon Linux O/S
+  * 8 GB
+* Hyperfoil Agent(s)
+  * Amazon Linux O/S
+  * 8 GB
+You can override these values via normal ansible means https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable.
+All node types should support RHEL and Fedora as well if you want to change the AMI used.
+
+### ec2-benchmark.yml
+This will run an end to end benchmark.
+That is it will provision all the EC2 nodes, start ISPN server, Hyperfoil Controller,
+run the Hyperfoil test, download the results and then delete all the EC2 elements.
+The only required argument is the region (e.g. `-e region=us-east-2`).
 
 
 License
