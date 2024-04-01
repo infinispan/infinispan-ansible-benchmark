@@ -2,6 +2,9 @@
 ssh_key: "benchmark"
 # Allows downloading benchmark result when stats are retrieved for a given run
 download_results: false
+# Allows to provide a local log file to be used by the controller
+# Use this instead of hyperfoil_log_config
+controller_log_config: "{{ undef() }}"
 
 # All of these are described at https://github.com/Hyperfoil/hyperfoil_setup
 
@@ -13,6 +16,7 @@ hyperfoil_controller_port: "{{ undef() }}"
 hyperfoil_controller_start_timeout: "{{ undef() }}"
 hyperfoil_controller_args: "{{ undef() }}"
 hyperfoil_trigger_url: "{{ undef() }}"
+# DO NOT USE, instead use controller_log_config
 hyperfoil_log_config: "{{ undef() }}"
 hyperfoil_jfr: false
 hyperfoil_controller_debug_port: "{{ undef() }}"
