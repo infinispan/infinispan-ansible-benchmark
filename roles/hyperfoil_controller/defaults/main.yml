@@ -1,5 +1,5 @@
-# Creates a named SSH key at $HOME/.ssh on the controller if not present
-ssh_key: "{{ undef() }}"
+# Creates a named SSH key at $HOME/.ssh on the controller
+ssh_key: "benchmark"
 # Allows downloading benchmark result when stats are retrieved for a given run
 download_results: false
 

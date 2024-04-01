@@ -7,7 +7,7 @@ agent_java_args: "{{ undef() }}"
 # This defines what ssh key will be copied from the Controller .ssh directory
 # to the authorized keys on each agent. Also the controller will add
 # a known_hosts entry for each agent
-ssh_key: "{{ undef() }}"
+ssh_key: "benchmark"
 
 # The rest are all described at https://github.com/Hyperfoil/hyperfoil_test
 
