@@ -1,0 +1,5 @@
+- name: Download the log files from each
+  ansible.builtin.fetch:
+    src: "/tmp/hyperfoil/workspace/agent.{{ inventory_hostname }}.log"
+    dest: "./"
+    flat: yes

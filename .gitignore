@@ -3,3 +3,4 @@ inventory.ini
 *inventory.yaml
 *.log
 *.pem
+.idea

@@ -6,3 +6,7 @@
   ansible.builtin.include_tasks: run.yml
   run_once: true
   when: operation is undefined or operation is search("run")
+
+- name: "Download Hyperfoil agent logs"
+  ansible.builtin.include_tasks: download_logs.yml
+  when: operation is defined and operation is search("download_logs")

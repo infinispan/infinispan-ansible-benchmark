@@ -15,3 +15,7 @@
 
 - ansible.builtin.include_tasks: shutdown.yml
   when: operation is defined and operation is search("shutdown")
+
+- name: "Download Hyperfoil controller logs"
+  ansible.builtin.include_tasks: download_logs.yml
+  when: operation is defined and operation is search("download_logs")
