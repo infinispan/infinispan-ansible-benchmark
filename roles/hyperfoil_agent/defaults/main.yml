@@ -1,3 +1,5 @@
+# Name of the cache to install use on the Infinispan Server
+cache_name: benchmark
 # The default test name to find in the benchmarks directory with a prefix ending in `yaml.j2`
 test_name: hotrod-benchmark
 # The JVM arguments to provide to the agent when it starts

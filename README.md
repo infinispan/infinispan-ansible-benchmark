@@ -56,6 +56,10 @@ There are three main playbooks: server.yml (Infinispan Server), hyperfoil_contro
 * hyperfoil_agent.yml - Runs a hyperfoil jobs, requires the controller and Infinispan servers to already be running.
   * Utilizes the `test_name` variable to read a templated file with extension `yaml.j2` in the `benchmarks` directory. Default is `hotrod-benchmark`
   * The configured host group can be replaced by passing `-e hyperfoil_agent_hosts=<host1,host2>'
+* all_benchmarks.yml - Runs multiple benchmarks in sequence. The instance must be running already, the playbook start the Hyperfoil controller
+ and start/stop the server for each benchmark. A file with the benchmark definitions must be provided
+  * Run this benchmark utilizing the sample definition as `-e @benchmark_definition.json`.
+  * The `cache_file` and `test_name` should not be set.
 
 The three main playbooks directly reference the three roles of the same name. They each have default values that can be overridden via the ansible command line such as `-e cache_name=name-of-my-cache`.
 
@@ -63,6 +67,27 @@ The three main playbooks directly reference the three roles of the same name. Th
 * Server defaults are [main.yaml](roles/server/defaults/main.yml)
 * Hyperfoil Controller arguments are [main.yaml](roles/hyperfoil_controller/defaults/main.yml)
 * Hyperfoil agent arguments are [main.yaml](roles/hyperfoil_agent/defaults/main.yml)
+
+### Benchmark definitions file
+
+Running multiple tests at once with `all_benchmarks.yml` playbook requires the definition in the `benchmark` variable.
+This is provided with the option `-e @<path-to.file>`.
+Ansible is capable of handling JSON or YAML files as inputs and associate the content to variables.
+Utilizing JSON as an example, the definition should follow:
+
+```json
+{
+  "benchmarks": [
+    {
+      "name": "hyperfoil-benchmark-name",
+      "cache": "cache-file.xml"
+    }
+  ]
+}
+```
+
+The benchmark files are located on the `./benchmarks/` folder, at the project root.
+The cache files are located in `./roles/server/files/` folder.
 
 Internal Steps
 --------------
