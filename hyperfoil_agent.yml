@@ -1,2 +1,2 @@
-- hosts: hyperfoil_agent
+- hosts: "{{ hyperfoil_agent_hosts | default('hyperfoil_agent') }}"
   roles: [ hyperfoil_agent ]
