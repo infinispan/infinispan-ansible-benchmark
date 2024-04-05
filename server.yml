@@ -1,2 +1,2 @@
-- hosts: server
+- hosts: "{{ server_hosts | default('server') }}"
   roles: [ server ]
