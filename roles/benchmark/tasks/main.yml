@@ -1,0 +1,13 @@
+- name: Assert variables
+  when: cache_name is defined or test_name is defined
+  fail:
+    msg: "Do not set 'cache_name' or 'test_name'"
+
+- name: Run all
+  ansible.builtin.include_tasks: run.yml
+  vars:
+    cache_name: "{{ benchmark.cache }}"
+    test_name: "{{ benchmark.name }}"
+  loop: "{{ benchmarks }}"
+  loop_control:
+    loop_var: benchmark

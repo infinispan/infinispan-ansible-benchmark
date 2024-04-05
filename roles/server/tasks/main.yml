@@ -10,8 +10,16 @@
       when: operation is undefined or operation is search("run")
 
     - name: "Creating cache"
-      ansible.builtin.include_tasks: create_cache.yml
+      ansible.builtin.include_tasks: cache_lifecycle.yml
+      vars:
+            http_method: PUT
       when: operation is undefined or operation is search("create_cache")
+
+    - name: "Delete cache"
+      ansible.builtin.include_tasks: cache_lifecycle.yml
+      vars:
+            http_method: DELETE
+      when: operation is defined and operation is search("delete_cache")
 
     - name: "Shutting down server"
       ansible.builtin.include_tasks: shutdown.yml

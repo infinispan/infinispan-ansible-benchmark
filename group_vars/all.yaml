@@ -1,5 +1,3 @@
-# Name of the cache to install use on the Infinispan Server
-cache_name: benchmark
 # User that is configured on the Infinispan Server
 user: benchmark
 # Password of the user configured on the Infinispan Server

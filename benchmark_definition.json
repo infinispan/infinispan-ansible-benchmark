@@ -1,0 +1,12 @@
+{
+  "benchmarks": [
+    {
+      "name": "hotrod-benchmark",
+      "cache": "cache.xml"
+    },
+    {
+      "name": "hotrod-benchmark",
+      "cache": "repl-cache.xml"
+    }
+  ]
+}

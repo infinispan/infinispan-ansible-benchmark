@@ -1,3 +1,5 @@
+# Name of the cache to install use on the Infinispan Server
+cache_name: benchmark
 # Location of the cache configuration to use for the named cache
 cache_file: files/cache.xml
 # Optional way to override the server image used by the benchmar
