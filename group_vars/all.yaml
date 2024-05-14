@@ -2,3 +2,7 @@
 user: benchmark
 # Password of the user configured on the Infinispan Server
 pass: benchmark
+
+
+# The default entrypoint for the Hyperfoil controller and agent.
+hyperfoil_dir: /tmp/hyperfoil

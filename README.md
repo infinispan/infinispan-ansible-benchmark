@@ -101,6 +101,19 @@ All of the roles internally have the notion of the following "steps" that are co
 
 Running a playbook will run the respective roles for each of these. If instead you want to run a subset you can use the operation argument as such `ansible-playbook -e operation=run`.
 
+#### JFR Hyperfoil
+
+To record Hyperfoil into JFR files we need to enable the options. It is possible to record on the controller and the agents separately, which with a different approach.
+To collect on the controller, when running the controller benchmark to start, pass the `-e hyperfoil_jfr=true` argument.
+
+The agents are started by the controller. Therefore, we need to provide the custom JVM arguments, we can do it when running the agent playbook. This is done with `-e agent_java_args="'-XX:StartFlightRecording=delay=10s,duration=24h,settings=profile,filename=/tmp/hyperfoil/workspace/hfa-hotrod.jfr'"` argument.
+
+> [!WARNING]
+> The name of the record file **needs** to be `/tmp/hyperfoil/workspace/hfa-hotrod.jfr`. All the other parameters in the `agent_java_args` or for recorder are optional.
+
+To download the files, the recorded system need to be stopped. The controller is stopped manually and the agent stops when the benchmark finishes.
+To download the controller recording, execute the controller playbook with the arguments `-e operation=stats -e test_runid=0000 -e hyperfoil_jfr=true`. The run ID 
+needs to exist on the controller. To download the agent recording, execute the agent playbook with the argument `-e download_jfr=true`.
 
 EC2 Benchmark
 ------------

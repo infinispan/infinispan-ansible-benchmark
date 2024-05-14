@@ -1,6 +1,6 @@
 - name: Find number of requests
   community.general.read_csv:
-    path: "{{ '/tmp/hyperfoil/workspace/run/' + test_runid + '/stats/total.csv' }}"
+    path: "{{ hyperfoil_dir }} + {{ '/workspace/run/' + test_runid + '/stats/total.csv' }}"
     key: Phase
   register: test_requests
 - name: Print number of requests
@@ -9,13 +9,13 @@
   loop: "{{ test_requests.dict.keys()|list }}"
 - name: Download Results
   ansible.builtin.fetch:
-    src: "{{ '/tmp/hyperfoil/workspace/run/' + test_runid + '/stats/total.csv' }}"
+    src: "{{ hyperfoil_dir }} + {{ '/workspace/run/' + test_runid + '/stats/total.csv' }}"
     dest: "{{ './' + test_runid + '_total.csv' }}"
     flat: true
   when: download_results
 - name: Download JFR
   ansible.builtin.fetch:
-    src: "{{ hyperfoil_dir }}/hfc-{{ ansible_hostname }}.jfr"
+    src: "{{ hyperfoil_dir }}/hfc-ip-{{ ansible_default_ipv4.address | replace('.', '-') }}.jfr"
     dest: "./"
     flat: true
   when: hyperfoil_jfr
