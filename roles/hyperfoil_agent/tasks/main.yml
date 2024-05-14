@@ -10,3 +10,10 @@
 - name: "Download Hyperfoil agent logs"
   ansible.builtin.include_tasks: download_logs.yml
   when: operation is defined and operation is search("download_logs")
+
+- name: Download JFR
+  ansible.builtin.fetch:
+    src: "{{ hyperfoil_dir }}/workspace/hfa-record.jfr"
+    dest: "./agent-{{ ansible_default_ipv4.address | replace('.', '-') }}.jfr"
+    flat: true
+  when: operation is defined and operation is search("download_jfr")

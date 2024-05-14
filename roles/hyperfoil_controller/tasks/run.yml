@@ -7,9 +7,9 @@
   - name: Upload log config file
     ansible.builtin.copy:
       src: "{{ controller_log_config }}"
-      dest: "/tmp/hyperfoil/"
+      dest: "{{ hyperfoil_dir }}"
   - ansible.builtin.set_fact:
-      hyperfoil_log_config: "/tmp/hyperfoil/{{ controller_log_config | basename }}"
+      hyperfoil_log_config: "{{ hyperfoil_dir }}/{{ controller_log_config | basename }}"
 
 - name: Setup Hyperfoil controller
   ansible.builtin.import_role:

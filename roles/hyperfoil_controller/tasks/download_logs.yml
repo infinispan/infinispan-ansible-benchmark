@@ -1,5 +1,5 @@
 - name: Download the log files from each
   ansible.builtin.fetch:
-    src: "/tmp/hyperfoil/hfc-ip-{{ ansible_default_ipv4.address | replace('.', '-') }}.log"
+    src: "{{ hyperfoil_dir }}/hfc-ip-{{ ansible_default_ipv4.address | replace('.', '-') }}.log"
     dest: "./"
     flat: yes
