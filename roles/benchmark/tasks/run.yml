@@ -1,3 +1,8 @@
+- name: Load benchmark arguments
+  ansible.builtin.set_fact:
+    "{{ item.key }}": "{{ item.value }}"
+  loop: "{{ arguments | dict2items }}"
+
 - name: Start Infinispan server
   ansible.builtin.include_role:
     name: server
