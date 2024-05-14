@@ -2,11 +2,51 @@
   "benchmarks": [
     {
       "name": "hotrod-benchmark",
-      "cache": "cache.xml"
+      "cache": "cache.xml",
+      "arguments": {
+        "read_ratio": 0.8,
+        "write_ratio": 0.2
+      }
     },
     {
       "name": "hotrod-benchmark",
-      "cache": "repl-cache.xml"
+      "cache": "cache.xml",
+      "arguments": {
+        "read_ratio": 1.0,
+        "write_ratio": 0.0
+      }
+    },
+    {
+      "name": "hotrod-benchmark",
+      "cache": "cache.xml",
+      "arguments": {
+        "read_ratio": 0.0,
+        "write_ratio": 1.0
+      }
+    },
+    {
+      "name": "hotrod-benchmark",
+      "cache": "repl-cache.xml",
+      "arguments": {
+        "read_ratio": 0.8,
+        "write_ratio": 0.2
+      }
+    },
+    {
+      "name": "hotrod-benchmark",
+      "cache": "repl-cache.xml",
+      "arguments": {
+        "read_ratio": 1.0,
+        "write_ratio": 0.0
+      }
+    },
+    {
+      "name": "hotrod-benchmark",
+      "cache": "repl-cache.xml",
+      "arguments": {
+        "read_ratio": 0.0,
+        "write_ratio": 1.0
+      }
     }
   ]
 }

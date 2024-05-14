@@ -6,8 +6,9 @@
 - name: Run all
   ansible.builtin.include_tasks: run.yml
   vars:
-    cache_name: "{{ benchmark.cache }}"
+    cache_file: "{{ benchmark.cache }}"
     test_name: "{{ benchmark.name }}"
+    arguments: "{{ benchmark.arguments | default('{}')}}"
   loop: "{{ benchmarks }}"
   loop_control:
     loop_var: benchmark

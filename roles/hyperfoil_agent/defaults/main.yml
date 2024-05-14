@@ -2,6 +2,20 @@
 cache_name: benchmark
 # The default test name to find in the benchmarks directory with a prefix ending in `yaml.j2`
 test_name: hotrod-benchmark
+
+# The default number of entries to utilize in the benchmarks
+number_entries: 4000
+
+# The read/write ratio for the benchmark. Default to 80/20, the sum must be 1
+read_ratio: 0.8
+write_ratio: 0.2
+
+# Request per second to issue cluster-wide.
+# The load follow the read/write ratio defined above and spreads across all the agents.
+# This value is the absolute final RPS at the end of the benchmark. The agents ramp-up from 1 to this max RPS.
+# One agent can not pass 1000 RPS. See: https://github.com/Hyperfoil/Hyperfoil/issues/342
+req_per_sec: 1800
+
 # The JVM arguments to provide to the agent when it starts
 # Note this is replaced in the benchmark file itself, see the benchmarks directory in the root
 agent_java_args: "{{ undef() }}"
