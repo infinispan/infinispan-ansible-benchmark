@@ -3,40 +3,34 @@ cluster_name: "benchmark_{{ cluster_identifier }}"
 
 cidr_ip: "{{ control_host_ip.stdout }}/32"
 
+# Utilize Graviton instances.
+# The `*_user` in each section must match the AMI user (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/managing-users.html#ami-default-user-names)
+# To list the available AMI names, select the desired region at the last argument:
+# aws ec2 describe-images --owners self amazon --filters "Name=architecture,Values=arm64" "Name=virtualization-type,Values=hvm" --region sa-east-1
+
 server_cluster_size: 3
-server_instance_type: t2.micro
-# Ubuntu
-#server_ami_name: ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20240207.1
-server_ami_name: debian-12-amd64-20231013-1532
-#server_ami_name: al2023-ami-2023.3.20240304.0-kernel-6.1-x86_64
-# Needs to match the user created by AMI
-#server_user: ubuntu
+server_instance_type: t4g.small
+server_ami_name: debian-12-arm64-20231013-1532
 server_user: admin
-#server_user: ec2-user
 server_volume_name: /dev/xvda
 # Allows overriding the size of the volume used by the server image
 server_volume_size: 20
 
+# Hyperfoil agents.
+# These instances are responsible to drive the load.
 agent_cluster_size: 2
-agent_instance_type: t2.micro
-#  Amazon Linux
-#agent_ami_name: ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20240207.1
-agent_ami_name: al2023-ami-2023.3.20240304.0-kernel-6.1-x86_64
-# Needs to match the user created by AMI
-#agent_user: ubuntu
+agent_instance_type: t4g.micro
+agent_ami_name: al2023-ami-2023.4.20240513.0-kernel-6.1-arm64
 agent_user: ec2-user
 agent_volume_name: "/dev/xvda"
-# Allows overriding the size of the volume used by the server image
 agent_volume_size: "8"
 
-# Controller only supports 1, so this cannot be changed
+# Hyperfoil controller.
+# Controller only supports 1 instance, so this cannot be changed.
+# The insntance only summarizes the statistics and coordinate the agents, we can use a smaller instance.
 controller_cluster_size: 1
-controller_instance_type: t2.micro
-#  Amazon Linux
-#controller_ami_name: ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20240207.1
-controller_ami_name: al2023-ami-2023.3.20240304.0-kernel-6.1-x86_64
-# Needs to match the user created by AMI
-#controller_user: ubuntu
+controller_instance_type: t4g.micro
+controller_ami_name: al2023-ami-2023.4.20240513.0-kernel-6.1-arm64
 controller_user: ec2-user
 controller_volume_name: "/dev/xvda"
 controller_volume_size: "8"
