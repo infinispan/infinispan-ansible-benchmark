@@ -1,6 +1,6 @@
 - name: "Amazon Linux Java Install"
   ansible.builtin.set_fact:
-    java_package: java-17-amazon-corretto
+    java_package: java-21-amazon-corretto
   when: ansible_distribution == "Amazon"
 
 - name: "Debian Java Install"
@@ -10,10 +10,10 @@
 
 - name: "Fedora Java Install"
   ansible.builtin.set_fact:
-    java_package: java-17-openjdk
+    java_package: java-21-openjdk
   when: ansible_distribution == "Fedora" or ansible_distribution == "RedHat"
 
-- name: Install Java 17 on agents
+- name: Install Java 21 on agents
   package:
     name: "{{ java_package }}"
     state: present

@@ -13,7 +13,7 @@
 
     - name: Apply server_java_args
       set_fact:
-        java_options: "{{ java_options + server_java_args if java_options is defined else server_java_args }}"
+        java_options: "{{ java_options + ' ' + server_java_args if java_options is defined else server_java_args }}"
       when: server_java_args is defined
 
     - name: Template Infinispan Server Configuration file
@@ -53,6 +53,27 @@
       - name: Print container log
         ansible.builtin.fail:
           msg: "{{ container_log.stdout_lines }}"
+
+    - name: Retrieve the current cluster size
+      ansible.builtin.uri:
+        url: http://localhost:11222/rest/v2/cluster?action=distribution
+        user: "{{ user }}"
+        password: "{{ pass }}"
+        method: GET
+        return_content: true
+      register: _result
+
+    - when: _result.status != 200 or (_result.json | length) != (groups['server'] | length)
+      block:
+        - name: Stop running servers
+          ansible.builtin.include_role:
+            name: server
+          vars:
+            operation: shutdown
+        
+        - name: Fail because cluster is malformed
+          fail:
+            msg: "Cluster is not formed: {{ _result.content }}"
 
     - name: Print contents of cache_file
       ansible.builtin.debug:

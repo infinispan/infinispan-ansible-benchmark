@@ -13,6 +13,14 @@
     dest: "{{ './' + test_runid + '_total.csv' }}"
     flat: true
   when: download_results
+
+- name: Download all json results
+  ansible.builtin.fetch:
+    src: "{{ '/tmp/hyperfoil/workspace/run/' + test_runid + '/all.json' }}"
+    dest: "{{ './' + test_runid + '_all.json' }}"
+    flat: true
+  when: download_results
+
 - name: Download JFR
   ansible.builtin.fetch:
     src: "{{ hyperfoil_dir }}/hfc-ip-{{ ansible_default_ipv4.address | replace('.', '-') }}.jfr"
