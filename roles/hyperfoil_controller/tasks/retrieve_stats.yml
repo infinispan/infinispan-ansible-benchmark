@@ -1,6 +1,6 @@
 - name: Find number of requests
   community.general.read_csv:
-    path: "{{ hyperfoil_dir }} + {{ '/workspace/run/' + test_runid + '/stats/total.csv' }}"
+    path: "{{ hyperfoil_dir }}{{ '/workspace/run/' + test_runid + '/stats/total.csv' }}"
     key: Phase
   register: test_requests
 - name: Print number of requests
@@ -9,7 +9,7 @@
   loop: "{{ test_requests.dict.keys()|list }}"
 - name: Download Results
   ansible.builtin.fetch:
-    src: "{{ hyperfoil_dir }} + {{ '/workspace/run/' + test_runid + '/stats/total.csv' }}"
+    src: "{{ hyperfoil_dir }}{{ '/workspace/run/' + test_runid + '/stats/total.csv' }}"
     dest: "{{ './' + test_runid + '_total.csv' }}"
     flat: true
   when: download_results
