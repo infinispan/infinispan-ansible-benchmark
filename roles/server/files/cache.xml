@@ -3,8 +3,7 @@
                    mode="SYNC"
                    statistics="true">
   <encoding media-type="application/x-protostream"/>
-  <expiration lifespan="500000"
-              max-idle="100000" />
+  <expiration lifespan="500000"/>
   <memory max-count="10000"
           when-full="REMOVE"/>
 </distributed-cache>
