@@ -1,0 +1,21 @@
+name: Create Hyperfoil controller instance
+description: Install dependencies and start Hyperfoil controller instance.
+
+inputs:
+  inventory:
+    description: 'The Ansible inventory file to use.'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: hyperfoil-requirements-install
+      name: Install the required Ansible Hyperfoil roles.
+      shell: bash
+      run: ./hyperfoil.sh requirements
+
+    - id: create-hyperfoil-controller
+      shell: bash
+      run: |
+        ./hyperfoil.sh init -i ${{ inputs.inventory }}
+        ./hyperfoil.sh run -i ${{ inputs.inventory }}

@@ -1,0 +1,18 @@
+name: Delete EC2 instances
+description: Deletes EC2 instances
+
+inputs:
+  region:
+    description: 'The AWS region used to delete the EC2 instances.'
+    required: true
+
+  inventory:
+    description: 'The Ansible inventory file name to use.'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: delete-load-runners
+      shell: bash
+      run: ./aws_ec2.sh delete ${{ inputs.region }} -i ${{ inputs.inventory }}

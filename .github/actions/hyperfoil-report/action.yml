@@ -1,0 +1,28 @@
+name: Download the reports
+description: Download all the benchmarks reports and upload to GitHub
+
+inputs:
+  inventory:
+    description: 'The Ansible inventory file to use.'
+    required: true
+
+  run_id:
+    description: 'Run to download reports'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: benchmark-run-all
+      name: Run the benchmark plan
+      shell: bash
+      run: ./hyperfoil.sh stats -i ${{ inputs.inventory }} -e test_runid=${{ inputs.run_id }} -e download_results=true
+
+    - uses: actions/upload-artifact@v4
+      id: upload-to-github
+      name: Upload ${{ inputs.report_folder }} to GitHub
+      with:
+        name: report-${{ inputs.run_id }}
+        path: |
+          ${{ inputs.run_id }}_total.csv
+          ${{ inputs.run_id }}_all.json

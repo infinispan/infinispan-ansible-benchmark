@@ -1,0 +1,33 @@
+name: Download the reports
+description: Download all the benchmarks reports and upload to GitHub
+
+inputs:
+  inventory:
+    description: 'The Ansible inventory file to use.'
+    required: true
+
+  benchmark_name:
+    description: 'Benchmark to run'
+    required: true
+
+  agent_java_args:
+    description: 'Java arguments for the Hyperfoil agent.'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - id: benchmark-run-all
+      name: Run the benchmark plan
+      shell: bash
+      run: ./hyperfoil.sh benchmark -i ${{ inputs.inventory }} -e test_name=${{ inputs.benchmark_name }} -e agent_java_args="${{ inputs.agent_java_args }}"
+
+    - uses: actions/upload-artifact@v4
+      id: upload-to-github
+      name: Upload ${{ inputs.report_folder }} to GitHub
+      with:
+        name: report-${{ inputs.run_id }}
+        path: |
+          ${{ inputs.run_id }}_total.csv
+          ${{ inputs.run_id }}_all.json
