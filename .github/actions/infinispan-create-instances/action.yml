@@ -1,0 +1,34 @@
+name: Create Infinispan server instances
+description: Creates Infinispan server instances
+
+inputs:
+  inventory:
+    description: 'The Ansible inventory file to use.'
+    required: true
+
+  image:
+    description: 'Infinispan server image to use.'
+    required: true
+
+  server_args:
+    description: 'Java arguments for the Infinispan server.'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - id: init-infinispan-server
+      name: Install dependencies for Infinispan server.
+      shell: bash
+      run: ./server.sh init -i ${{ inputs.inventory }}
+
+    - id: run-infinispan-server
+      name: Run Infinispan server instances.
+      shell: bash
+      run: |
+        until ./server.sh run -i ${{ inputs.inventory }} -e server_image=${{ inputs.image }} -e server_java_args=${{ inputs.server_args }}
+        do
+          echo "Retrying to start Infinispan instances..."
+          sleep 1
+        done
