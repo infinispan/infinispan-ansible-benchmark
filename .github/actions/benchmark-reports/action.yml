@@ -1,0 +1,31 @@
+name: Download the reports
+description: Download all the benchmarks reports and upload to GitHub
+
+inputs:
+  inventory:
+    description: 'The Ansible inventory file to use.'
+    required: true
+
+  definition:
+    description: 'The JSON file describing the benchmark plan.'
+    required: true
+
+  report_folder:
+    description: 'Folder to store the reports'
+    required: false
+    default: 'reports'
+
+runs:
+  using: composite
+  steps:
+    - id: benchmark-run-all
+      name: Run the benchmark plan
+      shell: bash
+      run: ./benchmark.sh report ${{ inputs.definition }} ${{ inputs.report_folder }} -i ${{ inputs.inventory }}
+
+    - uses: actions/upload-artifact@v4
+      id: upload-to-github
+      name: Upload ${{ inputs.report_folder }} to GitHub
+      with:
+        name: ${{ inputs.report_folder }}
+        path: ${{ inputs.report_folder }}
