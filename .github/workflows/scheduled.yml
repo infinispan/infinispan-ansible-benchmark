@@ -1,0 +1,20 @@
+name: Run benchmarks weekly
+
+on:
+  schedule:
+    # Run on every WED on 4:30 UTC
+    - cron: '30 4 * * 3'
+
+jobs:
+  scheduled-run:
+    name: Invoke complete default benchmark plan
+    uses: ./.github/workflows/multiple.yml
+    secrets: inherit
+    with:
+      branch: 'main'
+      region: 'us-east-1'
+      infinispan_image: 'quay.io/infinispan/server:latest'
+      benchmark_plan: 'benchmark_definition.json'
+      hyperfoil_agent_args: '-Xms128m -Xmx800m -XX:+UseZGC -XX:+ZGenerational'
+      aws_instances_args: '-e server_instance_type=t4g.small -e server_ami_name=debian-12-arm64-20231013-1532 -e agent_instance_type=t4g.micro -e agent_ami_name=al2023-ami-2023.4.20240513.0-kernel-6.1-arm64 -e controller_instance_type=t4g.micro -e controller_ami_name=al2023-ami-2023.4.20240513.0-kernel-6.1-arm64'
+      server_args: ''
