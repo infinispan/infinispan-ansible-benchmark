@@ -61,9 +61,11 @@
         password: "{{ pass }}"
         method: GET
         return_content: true
+        status_code: [200, 405]
       register: _result
 
-    - when: _result.status != 200 or (_result.json | length) != (groups['server'] | length)
+    # Handle versions where the distribution API doesn't exist.
+    - when: _result.status != 405 and (_result.status != 200 or (_result.json | length) != (groups['server'] | length))
       block:
         - name: Stop running servers
           ansible.builtin.include_role:

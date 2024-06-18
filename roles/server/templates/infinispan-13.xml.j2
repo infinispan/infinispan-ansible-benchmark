@@ -1,0 +1,70 @@
+<infinispan
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="urn:infinispan:config:13.0 https://infinispan.org/schemas/infinispan-config-13.0.xsd
+                            urn:infinispan:server:13.0 https://infinispan.org/schemas/infinispan-server-13.0.xsd"
+      xmlns="urn:infinispan:config:13.0"
+      xmlns:server="urn:infinispan:server:13.0">
+
+## Sets up initial hosts so it is easier to see
+{% set initial_hosts = [] %}
+{% for host in groups['server'] %}
+  {{ initial_hosts.append(host + "[7800]") }}
+{% endfor %}
+
+   <jgroups>
+     <stack name="benchmark-stack" extends="tcp">
+       <TCPPING stack.combine="REPLACE" stack.position="MPING"
+       initial_hosts="$jgroups.tcpping.initial_hosts:{{ initial_hosts|join(", ") }}"
+       />
+     </stack>
+   </jgroups>
+   <cache-container name="default" statistics="true">
+      <transport cluster="${infinispan.cluster.name:cluster}" stack="${infinispan.cluster.stack:benchmark-stack}" node-name="${infinispan.node.name:}"/>
+{%- if require_authentication is undefined or require_authentication %}
+      <security>
+         <authorization/>
+      </security>
+{% endif %}
+   </cache-container>
+
+   <server xmlns="urn:infinispan:server:13.0">
+      <interfaces>
+         <interface name="public">
+            <inet-address value="${infinispan.bind.address:127.0.0.1}"/>
+         </interface>
+      </interfaces>
+
+      <socket-bindings default-interface="public" port-offset="${infinispan.socket.binding.port-offset:0}">
+         <socket-binding name="default" port="${infinispan.bind.port:11222}"/>
+         <socket-binding name="memcached" port="11221"/>
+      </socket-bindings>
+
+{%- if require_authentication is undefined or require_authentication %}
+      <security>
+         <credential-stores>
+            <credential-store name="credentials" path="credentials.pfx">
+               <clear-text-credential clear-text="secret"/>
+            </credential-store>
+         </credential-stores>
+         <security-realms>
+            <security-realm name="default">
+               <!-- Uncomment to enable TLS on the realm -->
+               <!-- server-identities>
+                  <ssl>
+                     <keystore path="application.keystore"
+                               password="password" alias="server"
+                               generate-self-signed-certificate-host="localhost"/>
+                  </ssl>
+               </server-identities-->
+               <properties-realm groups-attribute="Roles">
+                  <user-properties path="users.properties"/>
+                  <group-properties path="groups.properties"/>
+               </properties-realm>
+            </security-realm>
+         </security-realms>
+      </security>
+{% endif %}
+
+      <endpoints socket-binding="default" {% if require_authentication is undefined or require_authentication %}security-realm="default"{% endif %}/>
+   </server>
+</infinispan>
