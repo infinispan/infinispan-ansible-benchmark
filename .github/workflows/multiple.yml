@@ -1,0 +1,95 @@
+name: Run a benchmark plan
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch/commit to run the benchmarks.'
+        type: string
+        default: 'main'
+
+      region:
+        description: 'Name of the region where EC2 instances should be installed'
+        type: string
+        default: 'sa-east-1'
+
+      infinispan_image:
+        description: 'Infinispan server image to utilize'
+        type: string
+        default: 'quay.io/infinispan/server'
+
+      benchmark_plan:
+        description: 'Benchmark plan to run'
+        type: string
+        default: 'benchmark_definition.json'
+
+      hyperfoil_agent_args:
+        description: 'Arguments to provide the Hyperfoil agent'
+        type: string
+        default: '-Xms128m -Xmx800m -XX:+UseZGC -XX:+ZGenerational'
+
+      aws_instances_args:
+        description: 'Arguments to provide to Ansible when provisioning the instances'
+        type: string
+        default: ''
+
+      server_args:
+        description: 'Java arguments to provide the Infinispan server.'
+        type: string
+        default: ''
+
+env:
+  ANSIBLE_HOST_KEY_CHECKING: False
+  INVENTORY_NAME: 'benchmark-file.yaml'
+
+jobs:
+  bencmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Create AWS EC2 instances
+        id: create_aws_ec2_instances
+        uses: ./.github/actions/ec2-create-instances
+        with:
+          region: ${{ inputs.region }}
+          arguments: ${{ inputs.aws_instances_args }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Set inventory file name
+        run: ls -1 *_inventory.yaml | xargs -L1 -I{} cp {} $INVENTORY_NAME
+
+      - name: Start the Hyperfoil controller
+        uses: ./.github/actions/hyperfoil-create-controller
+        with:
+          inventory: $INVENTORY_NAME
+
+      - name: Run all benchmarks for image ${{ inputs.infinispan_image }}
+        uses: ./.github/actions/benchmark-complete
+        with:
+          inventory: $INVENTORY_NAME
+          definition: ${{ inputs.benchmark_plan }}
+          server_java_args: ${{ inputs.server_args }}
+          hyperfoil_agent_args: ${{ inputs.hyperfoil_agent_args }}
+
+      - name: Download all the results
+        uses: ./.github/actions/benchmark-reports
+        with:
+          inventory: $INVENTORY_NAME
+          definition: ${{ inputs.benchmark_plan }}
+          report_folder: reports
+
+      - name: Delete EC2 instances
+        if: ${{ always() && steps.create_aws_ec2_instances.conclusion != 'skipped' }}
+        uses: ./.github/actions/ec2-delete-instances
+        with:
+          region: ${{ inputs.region }}
+          inventory: $INVENTORY_NAME
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

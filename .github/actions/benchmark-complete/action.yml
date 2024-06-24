@@ -1,0 +1,29 @@
+name: Run the complete benchmark definition
+description: Run all the benchmarks in sequence
+
+inputs:
+  inventory:
+    description: 'The Ansible inventory file to use.'
+    required: true
+
+  definition:
+    description: 'The JSON file describing the benchmark plan.'
+    required: true
+
+  hyperfoil_agent_args:
+    description: 'Arguments to provide to the Hyperfoil agent.'
+    required: false
+    default: ''
+
+  server_java_args:
+    description: 'Arguments to provide to the Infinispan server.'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - id: benchmark-run-all
+      name: Run the benchmark plan
+      shell: bash
+      run: ./benchmark.sh run -i ${{ inputs.inventory }} -e @${{ inputs.definition }} -e agent_java_args=\"'${{ inputs.hyperfoil_agent_args }}'\" -e server_java_args=\"'${{ inputs.server_java_args }}'\"
