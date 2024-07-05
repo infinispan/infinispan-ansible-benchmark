@@ -1,6 +1,8 @@
 - name: Import hyperfoil test to run
   ansible.builtin.import_role:
     name: hyperfoil.hyperfoil_test
+  vars:
+    run_description: "{{ hyperfoil_run_description }}"
 
 - name: Hyperfoil test requests
   ansible.builtin.include_role:

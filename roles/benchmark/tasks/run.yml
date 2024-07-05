@@ -17,6 +17,7 @@
   run_once: true
   vars:
     operation: run
+    hyperfoil_run_description: "{{ server_image }}-{{ cache_file }}"
 
 - name: Shutdown Infinispan server
   ansible.builtin.include_role:

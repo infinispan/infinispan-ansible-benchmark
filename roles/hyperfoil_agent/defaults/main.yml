@@ -25,6 +25,11 @@ agent_java_args: "{{ undef() }}"
 # a known_hosts entry for each agent
 ssh_key: "benchmark"
 
+# Defines the description of the run on the JSON output.
+# We utilize this value to distinguish between server version and cache configuration on Horreum.
+# By default, it can be null. If running the complete test suite, it is automatically filled.
+hyperfoil_run_description: ''
+
 # The rest are all described at https://github.com/Hyperfoil/hyperfoil_test
 
 hyperfoil_controller_group: hyperfoil_controller

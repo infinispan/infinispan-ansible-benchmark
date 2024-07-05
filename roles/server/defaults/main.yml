@@ -2,8 +2,8 @@
 cache_name: benchmark
 # Location of the cache configuration to use for the named cache
 cache_file: files/cache.xml
-# Optional way to override the server image used by the benchmar
-server_image: quay.io/infinispan/server
+# Optional way to override the server image used by the benchmark
+server_image: "quay.io/infinispan/server:15.0"
 # Java VM arguments passed to the server image when running
 server_java_args: "{{ undef() }}"
 # Allows for automatic generation of Java Flight Recorder and download
