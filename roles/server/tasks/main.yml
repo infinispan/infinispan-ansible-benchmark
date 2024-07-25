@@ -24,3 +24,10 @@
     - name: "Shutting down server"
       ansible.builtin.include_tasks: shutdown.yml
       when: operation is defined and operation is search("shutdown")
+
+    - name: Measure latency between nodes
+      ansible.builtin.include_role:
+        name: latency_summary
+      vars:
+        group: "server"
+      when: operation is defined and operation is search('latency')

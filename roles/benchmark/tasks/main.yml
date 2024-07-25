@@ -3,6 +3,22 @@
   fail:
     msg: "Do not set 'cache_name' or 'test_name'"
 
+- name: Start Infinispan server
+  ansible.builtin.include_role:
+    name: server
+  vars:
+    operation: latency
+
+- name: Latency between agents to server
+  ansible.builtin.include_role:
+    name: latency_summary
+    apply:
+      delegate_to: "{{ item }}"
+  vars:
+    group: "server"
+    operation: latency
+  loop: "{{ groups['hyperfoil_agent'] }}"
+
 - name: Run all
   ansible.builtin.include_tasks: run.yml
   vars:

@@ -17,3 +17,10 @@
     dest: "./agent-{{ ansible_default_ipv4.address | replace('.', '-') }}.jfr"
     flat: true
   when: operation is defined and operation is search("download_jfr")
+
+- name: Latency between agent to server
+  ansible.builtin.include_role:
+    name: latency_summary
+  vars:
+    group: "server"
+  when: operation is defined and operation is search('latency')
