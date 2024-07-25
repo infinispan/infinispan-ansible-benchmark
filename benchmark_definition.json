@@ -26,6 +26,14 @@
     },
     {
       "name": "hotrod-benchmark",
+      "cache": "dist-sifs.xml",
+      "arguments": {
+        "read_ratio": 0.8,
+        "write_ratio": 0.2
+      }
+    },
+    {
+      "name": "hotrod-benchmark",
       "cache": "repl-cache.xml",
       "arguments": {
         "read_ratio": 0.8,
@@ -46,6 +54,14 @@
       "arguments": {
         "read_ratio": 0.0,
         "write_ratio": 1.0
+      }
+    },
+    {
+      "name": "hotrod-benchmark",
+      "cache": "repl-sifs.xml",
+      "arguments": {
+        "read_ratio": 0.8,
+        "write_ratio": 0.2
       }
     }
   ]

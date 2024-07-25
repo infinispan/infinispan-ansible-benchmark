@@ -1,0 +1,15 @@
+<replicated-cache segments="256"
+                   mode="SYNC"
+                   statistics="true">
+  <encoding media-type="application/x-protostream"/>
+  <expiration lifespan="500000"/>
+
+  <!-- Max-count of 1 to force entries to disk. -->
+  <memory max-count="1" when-full="REMOVE"/>
+  <persistence passivation="true">
+    <file-store shared="false">
+      <data path="data"/>
+      <index path="index"/>
+    </file-store>
+  </persistence>
+</replicated-cache>
